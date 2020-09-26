@@ -74,13 +74,48 @@ func SorensenDice(stringOne, stringTwo string) float64 {
 	return (2.0 * intersectionSize) / (float64(len(stringOne)) + float64(len(stringTwo)) - 2)
 }
 
-// Function to execute open command 
-func openExecute(app string, destFile string) error {
-
-	if app == "<>" && destFile == "<>" {
-		return errors.New("missing application and file parameter")
+// Function to get files along directory tree 
+func getFiles() ([]string, error) {
+	files := []string{}
+	err := filepath.Walk(".",
+	    func(path string, info os.FileInfo, err error) error {
+	    if err != nil {
+	        return err
+		}
+		if !info.IsDir() {
+			files = append(files, path)
+		}
+	    return nil
+	})
+	if err != nil {
+	    return nil, err
 	}
 
+	return files, nil
+}
+
+// Function to get files along directory tree 
+func getDirs() ([]string, error) {
+	dirs := []string{}
+	err := filepath.Walk(".",
+	    func(path string, info os.FileInfo, err error) error {
+	    if err != nil {
+	        return err
+		}
+		if info.IsDir() {
+			dirs = append(dirs, path)
+		}
+	    return nil
+	})
+	if err != nil {
+	    return nil, err
+	}
+
+	return dirs, nil
+}
+
+// Function to execute open command 
+func openExecute(app string, dest string, findDir bool) error {
 	app_map := make(map[string]string)
 	app_map["sblm"] = "Sublime Text"
 	app_map["vsc"] = "Visual Studio Code"
@@ -88,26 +123,24 @@ func openExecute(app string, destFile string) error {
 	app_map["adbi"] = "Adobe Illustrator"
 	app_map["adbp"] = "Adobe Photoshop CS6"
 
-	files := []string{}
-	err := filepath.Walk(".",
-	    func(path string, info os.FileInfo, err error) error {
-	    if err != nil {
-	        return err
-	    }
-	    files = append(files, path)
-	    return nil
-	})
+	var entities []string
+	var err error
+	if findDir == true {
+		entities, err = getDirs()
+	} else {
+		entities, err = getFiles()
+	}
 	if err != nil {
-	    fmt.Println(err)
+	    return err
 	}
 
 	maxCoeff := 0.0
 	path := ""
-	for _, file := range files {
-		currCoeff := SorensenDice(file, destFile)
+	for _, ent := range entities {
+		currCoeff := SorensenDice(ent, dest)
 		if currCoeff > maxCoeff {
 			currCoeff = maxCoeff
-			path = file
+			path = ent
 		}
 	}
 
@@ -132,9 +165,22 @@ var openCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		app, _ := cmd.Flags().GetString("app")
 		file, _ := cmd.Flags().GetString("file")
-		err := openExecute(app, file)
-		if err != nil {
-			fmt.Println("Error:", err)
+		directory, _ := cmd.Flags().GetString("dir")
+		if app == "<>" {
+			fmt.Println("Error: missing application parameter")
+		} else if file == "<>" && directory == "<>" {
+			fmt.Println("Error: both file and directory were left empty")
+		} else {
+			var err error
+			if file == "<>" {
+				err = openExecute(app, directory, true)
+			} else {
+				err = openExecute(app, file, false)
+			}
+
+			if err != nil {
+				fmt.Println("Error:", err)
+			}
 		}
 	},
 }
@@ -143,6 +189,7 @@ func init() {
 	rootCmd.AddCommand(openCmd)
 
 	// Here you will define your flags and configuration settings.
-	openCmd.Flags().StringP("app", "a", "<>", "application for opening file")
+	openCmd.Flags().StringP("app", "a", "<>", "application for opening file/directory")
 	openCmd.Flags().StringP("file", "f", "<>", "file being opened")
+	openCmd.Flags().StringP("dir", "d", "<>", "directory being opened")
 }
