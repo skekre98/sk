@@ -3,7 +3,6 @@
 function install_dependencies {
 	echo Installing cobra...
 	go get -v github.com/spf13/cobra/cobra
-	echo
 }
 
 function create_configs {
