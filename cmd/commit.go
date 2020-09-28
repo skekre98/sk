@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 	"os/exec"
+	"errors"
 	"github.com/spf13/cobra"
 )
 
@@ -25,21 +26,21 @@ import (
 func gitCommit(msg string, branch string) error {
 	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
-		return err
+		return errors.New("add failed <->")
 	} else {
 		fmt.Println("changes added <+>")
 	}
 
 	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
-		return err
+		return errors.New("commit failed <\\>")
 	} else {
 		fmt.Println("changes commited <|>")
 	}
 
 	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
-		return err
+		return errors.New("push failed <.>")
 	} else {
 		fmt.Println("changes pushed <^>")
 	}
