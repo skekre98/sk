@@ -16,10 +16,53 @@ limitations under the License.
 package cmd
 
 import (
+	"os"
 	"fmt"
-
+	"time"
+	// "errors"
+	"encoding/json"
+	"io/ioutil"
 	"github.com/spf13/cobra"
 )
+
+// task struct 
+type Task struct {
+	Text string `json:"Text"`
+	Start time.Time `json:"Start"`
+}
+
+// Function to add task to list 
+func addTask(task string) error {
+	// Reading from file 
+	home := os.Getenv("HOME")
+	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
+	file, err := ioutil.ReadFile(fileName)
+    if err != nil {
+        return err
+	}
+	
+	// Preparing data 
+	data := []Task{}
+	json.Unmarshal(file, &data)
+	newTask := &Task{
+		Text: task,
+		Start: time.Now(),
+	}
+	data = append(data, *newTask)
+	dataBytes, err := json.Marshal(data)
+    if err != nil {
+        return err
+    }
+
+	// Writing to file 
+	err = ioutil.WriteFile(fileName, dataBytes, 0644)
+    if err != nil {
+        return err
+    }
+
+	fmt.Println("Successfully added task")
+	return nil
+}
 
 // ttCmd represents the tt command
 var ttCmd = &cobra.Command{
@@ -33,8 +76,10 @@ multiple tiers of difficulty to these tasks.`,
 		startTask, _ := cmd.Flags().GetString("start")
 		endTask, _ := cmd.Flags().GetString("end")
 		if startTask != "<>" {
-			// TODO
-			fmt.Println("task started")
+			err := addTask(startTask)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		} else if endTask != "<>" {
 			// TODO
 			fmt.Println("task completed")
