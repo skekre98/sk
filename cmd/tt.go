@@ -29,10 +29,11 @@ import (
 type Task struct {
 	Text string `json:"Text"`
 	Start time.Time `json:"Start"`
+	Level int `json:"Level"`
 }
 
 // Function to add task to list 
-func addTask(task string) error {
+func addTask(task string, level int) error {
 	// Reading from file 
 	home := os.Getenv("HOME")
 	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
@@ -52,6 +53,7 @@ func addTask(task string) error {
 	newTask := &Task{
 		Text: task,
 		Start: time.Now(),
+		Level: level,
 	}
 	data = append(data, *newTask)
 	dataBytes, err := json.Marshal(data)
@@ -80,8 +82,9 @@ multiple tiers of difficulty to these tasks.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		startTask, _ := cmd.Flags().GetString("start")
 		endTask, _ := cmd.Flags().GetString("end")
+		taskLevel, _ := cmd.Flags().GetInt("level")
 		if startTask != "<>" {
-			err := addTask(startTask)
+			err := addTask(startTask, taskLevel)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
@@ -102,5 +105,6 @@ func init() {
 
 	// Here you will define your flags and configuration settings.
 	ttCmd.Flags().StringP("start", "s", "<>", "task being started")
+	ttCmd.Flags().IntP("level", "l", 1, "difficulty level")
 	ttCmd.Flags().StringP("end", "e", "<>", "task being completed")
 }

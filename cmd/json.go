@@ -17,22 +17,54 @@ package cmd
 
 import (
 	"fmt"
-
+	"bytes"
+	"io/ioutil"
+	"encoding/json"
 	"github.com/spf13/cobra"
 )
+
+// Function to indent json data
+func jsonBytes(b []byte) ([]byte, error) {
+    var out bytes.Buffer
+    err := json.Indent(&out, b, "", "  ")
+    return out.Bytes(), err
+}
+
+
+// Function to print json file 
+func printJson(fileName string) error {
+	jsonFile, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+
+	b := []byte(jsonFile)
+	b, err = jsonBytes(b)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%s\n", b)
+	return nil
+}
 
 // jsonCmd represents the json command
 var jsonCmd = &cobra.Command{
 	Use:   "json",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "<~>",
+	Long: `command to print a json file in indented format
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+file must be in current directory tree`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("json called")
+		file, _ := cmd.Flags().GetString("file")
+		if file == "<>" {
+			fmt.Println("Error: missing file parameter")
+		} else {
+			err := printJson(file)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		}
 	},
 }
 
@@ -40,12 +72,5 @@ func init() {
 	rootCmd.AddCommand(jsonCmd)
 
 	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// jsonCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// jsonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	jsonCmd.Flags().StringP("file", "f", "<>", "json file")
 }
