@@ -24,7 +24,7 @@ import (
 
 // Function to run git commands
 func gitCommit(msg string, branch string) error {
-	fmt.Printf("\033[2K\r%s", "adding changes...")
+	fmt.Printf("\033[2K\radding changes...")
 	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
 		return errors.New("ADD FAILED <!!!!!>")
@@ -32,7 +32,7 @@ func gitCommit(msg string, branch string) error {
 		fmt.Println("changes added <+>")
 	}
 
-	fmt.Printf("\033[2K\r%s", "commiting changes...")
+	fmt.Printf("\033[2K\rcommiting changes...")
 	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
 		return errors.New("COMMIT FAILED <!!!!!>")
@@ -40,7 +40,7 @@ func gitCommit(msg string, branch string) error {
 		fmt.Println("changes commited <|>")
 	}
 
-	fmt.Printf("\033[2K\r%s", "pushing changes...")
+	fmt.Printf("\033[2K\rpushing changes...")
 	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
 		return errors.New("PUSH FAILED <!!!!!>")
@@ -65,10 +65,6 @@ Combines add, commit, and push into one command.`,
 		if err != nil {
 			fmt.Println(err)
 		}
-		for i:= 1000000; i>=0; i-- {
-			fmt.Printf("\033[2K\r%d %d", i, i+50)
-		}
-		fmt.Println()
 	},
 }
 
