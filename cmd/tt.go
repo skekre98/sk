@@ -37,8 +37,8 @@ func addTask(task string) error {
 	home := os.Getenv("HOME")
 	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
 	file, err := ioutil.ReadFile(fileName)
-    if err != nil {
-        return err
+	if err != nil {
+		return err
 	}
 	
 	// Preparing data 
@@ -50,15 +50,15 @@ func addTask(task string) error {
 	}
 	data = append(data, *newTask)
 	dataBytes, err := json.Marshal(data)
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	// Writing to file 
 	err = ioutil.WriteFile(fileName, dataBytes, 0644)
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	fmt.Println("Successfully added task")
 	return nil
