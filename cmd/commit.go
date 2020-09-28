@@ -54,7 +54,7 @@ var commitCmd = &cobra.Command{
 	Short: "A command to push to Github",
 	Long: `A replacement for git
 
-Combines add, commit, and push into one command.`,
+Combines add, commit, and push into one command!`,
 	Run: func(cmd *cobra.Command, args []string) {
 		msg, _ := cmd.Flags().GetString("msg")
 		branch, _ := cmd.Flags().GetString("branch")
