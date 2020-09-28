@@ -66,7 +66,7 @@ Combines add, commit, and push into one command.`,
 			fmt.Println(err)
 		}
 		for i:= 1000000; i>=0; i-- {
-			fmt.Printf("\033[2K\rnumber %d", i)
+			fmt.Printf("\033[2K\r%d %d", i, i+50)
 		}
 		fmt.Println()
 	},
