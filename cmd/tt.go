@@ -19,7 +19,7 @@ import (
 	"os"
 	"fmt"
 	"time"
-	// "errors"
+	"errors"
 	"encoding/json"
 	"io/ioutil"
 	"github.com/spf13/cobra"
@@ -44,6 +44,11 @@ func addTask(task string) error {
 	// Preparing data 
 	data := []Task{}
 	json.Unmarshal(file, &data)
+	for _, t := range data {
+		if t.Text == task {
+			return errors.New("Error: duplicate task already exists")
+		}
+	}
 	newTask := &Task{
 		Text: task,
 		Start: time.Now(),
