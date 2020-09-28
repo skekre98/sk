@@ -27,21 +27,21 @@ func gitCommit(msg string, branch string) error {
 	if err != nil {
 		return err
 	} else {
-		fmt.Println("%s\n", addOut)
+		fmt.Println("%s\n", string(addOut))
 	}
 
 	commitOut, err := exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
 		return err
 	} else {
-		fmt.Println("%s\n", commitOut)
+		fmt.Println("%s\n", string(commitOut))
 	}
 
 	pushOut, err := exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
 		return err
 	} else {
-		fmt.Println("%s\n", pushOut)
+		fmt.Println("%s\n", string(pushOut))
 	}
 
 	return nil
