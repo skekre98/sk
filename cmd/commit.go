@@ -27,25 +27,25 @@ func gitCommit(msg string, branch string) error {
 	fmt.Println("\radding changes...")
 	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
-		return errors.New("ADD FAILED <!!!!!>")
+		return errors.New("\rADD FAILED <!!!!!>")
 	} else {
-		fmt.Println("changes added <+>")
+		fmt.Println("\rchanges added <+>")
 	}
 
 	fmt.Println("\rcommiting changes...")
 	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
-		return errors.New("COMMIT FAILED <!!!!!>")
+		return errors.New("\rCOMMIT FAILED <!!!!!>")
 	} else {
-		fmt.Println("changes commited <|>")
+		fmt.Println("\rchanges commited <|>")
 	}
 
 	fmt.Println("\rpushing changes...")
 	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
-		return errors.New("PUSH FAILED <!!!!!>")
+		return errors.New("\rPUSH FAILED <!!!!!>")
 	} else {
-		fmt.Println("changes pushed <^>")
+		fmt.Println("\rchanges pushed <^>")
 	}
 
 	return nil
