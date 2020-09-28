@@ -65,7 +65,7 @@ Combines add, commit, and push into one command.`,
 		if err != nil {
 			fmt.Println(err)
 		}
-		for i:= 10; i>=0; i-- {
+		for i:= 1000; i>=0; i-- {
 			fmt.Printf("\033[2K\r%d", i)
 		}
 		fmt.Println()
