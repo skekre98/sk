@@ -24,28 +24,28 @@ import (
 
 // Function to run git commands
 func gitCommit(msg string, branch string) error {
-	fmt.Println("\radding changes...")
+	fmt.Printf("\033[2K\r%s", "adding changes...")
 	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
-		return errors.New("\rADD FAILED <!!!!!>")
+		return errors.New("ADD FAILED <!!!!!>")
 	} else {
-		fmt.Println("\rchanges added <+>")
+		fmt.Println("changes added <+>")
 	}
 
-	fmt.Println("\rcommiting changes...")
+	fmt.Printf("\033[2K\r%s", "commiting changes...")
 	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
-		return errors.New("\rCOMMIT FAILED <!!!!!>")
+		return errors.New("COMMIT FAILED <!!!!!>")
 	} else {
-		fmt.Println("\rchanges commited <|>")
+		fmt.Println("changes commited <|>")
 	}
 
-	fmt.Println("\rpushing changes...")
+	fmt.Printf("\033[2K\r%s", "pushing changes...")
 	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
-		return errors.New("\rPUSH FAILED <!!!!!>")
+		return errors.New("PUSH FAILED <!!!!!>")
 	} else {
-		fmt.Println("\rchanges pushed <^>")
+		fmt.Println("changes pushed <^>")
 	}
 
 	return nil
