@@ -26,21 +26,21 @@ import (
 func gitCommit(msg string, branch string) error {
 	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
-		return errors.New("add failed <!!!!!>")
+		return errors.New("ADD FAILED <!!!!!>")
 	} else {
 		fmt.Println("changes added <+>")
 	}
 
 	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
-		return errors.New("commit failed <!!!!!>")
+		return errors.New("COMMIT FAILED <!!!!!>")
 	} else {
 		fmt.Println("changes commited <|>")
 	}
 
 	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
-		return errors.New("push failed <!!!!!>")
+		return errors.New("PUSH FAILED <!!!!!>")
 	} else {
 		fmt.Println("changes pushed <^>")
 	}
