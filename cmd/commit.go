@@ -23,25 +23,25 @@ import (
 
 // Function to run git commands
 func gitCommit(msg string, branch string) error {
-	addOut, err := exec.Command("git", "add", ".").Output()
+	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
 		return err
 	} else {
-		fmt.Println("%s\n", string(addOut))
+		fmt.Println("changes added <+>")
 	}
 
-	commitOut, err := exec.Command("git", "commit", "-m", msg).Output()
+	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
 		return err
 	} else {
-		fmt.Println("%s\n", string(commitOut))
+		fmt.Println("changes commited <|>")
 	}
 
-	pushOut, err := exec.Command("git", "push", "origin", branch).Output()
+	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
 		return err
 	} else {
-		fmt.Println("%s\n", string(pushOut))
+		fmt.Println("changes pushed <^>")
 	}
 
 	return nil
