@@ -24,6 +24,7 @@ import (
 
 // Function to run git commands
 func gitCommit(msg string, branch string) error {
+	fmt.Println("adding changes...\r")
 	_, err := exec.Command("git", "add", ".").Output()
 	if err != nil {
 		return errors.New("ADD FAILED <!!!!!>")
@@ -31,6 +32,7 @@ func gitCommit(msg string, branch string) error {
 		fmt.Println("changes added <+>")
 	}
 
+	fmt.Println("commiting changes...\r")
 	_, err = exec.Command("git", "commit", "-m", msg).Output()
 	if err != nil {
 		return errors.New("COMMIT FAILED <!!!!!>")
@@ -38,6 +40,7 @@ func gitCommit(msg string, branch string) error {
 		fmt.Println("changes commited <|>")
 	}
 
+	fmt.Println("pushing changes...\r")
 	_, err = exec.Command("git", "push", "origin", branch).Output()
 	if err != nil {
 		return errors.New("PUSH FAILED <!!!!!>")
