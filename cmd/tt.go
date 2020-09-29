@@ -32,6 +32,109 @@ type Task struct {
 	Level int `json:"Level"`
 }
 
+// finished Task struct 
+type FinishedTask struct {
+	Text string `json:"Text"`
+	Duration time.Duration `json:"Duration"`
+	Level int `json:"Level"`	
+}
+
+// Function to mark task as completed 
+func markComplete(finished Task) error {
+	// Reading from file 
+	home := os.Getenv("HOME")
+	fileName := fmt.Sprintf("%s/.tt/completed.json", home)
+	file, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+	
+	// Preparing data 
+	data := []FinishedTask{}
+	json.Unmarshal(file, &data)
+	newFinish := &FinishedTask{
+		Text: finished.Text,
+		Duration: time.Now().Sub(finished.Start),
+		Level: finished.Level,
+	}
+	fmt.Println(newFinish.Duration)
+	data = append(data, *newFinish)
+	dataBytes, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	// Writing to file 
+	err = ioutil.WriteFile(fileName, dataBytes, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Function to remove task from task file 
+func popTask(filename string, task string) ([]Task, error) {
+	file, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Preparing data 
+	taskArray := []Task{}
+	json.Unmarshal(file, &taskArray)	
+
+	pos := -1
+	for i, t := range taskArray {
+		if t.Text == task {
+			pos = i
+            break
+		}
+	}
+	if pos == -1 {
+		return nil, errors.New("task does not exist")
+	}
+
+	// Mark task as completed 
+	completedTask := taskArray[pos]
+	err = markComplete(completedTask)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return updated list
+	copy(taskArray[pos:], taskArray[pos+1:]) 
+	taskArray[len(taskArray)-1] = Task{}
+	taskArray = taskArray[:len(taskArray)-1]
+
+	return taskArray, nil
+}
+
+// Function to migrate task to completed list 
+func migrateTask(task string) error {
+	// Reading from file 
+	home := os.Getenv("HOME")
+	taskFile := fmt.Sprintf("%s/.tt/tasks.json", home)
+	taskArray, err := popTask(taskFile, task)
+	if err != nil {
+        return err
+    }
+
+	dataBytes, err := json.Marshal(taskArray)
+	if err != nil {
+		return err
+	}
+
+	// Writing to file 
+	err = ioutil.WriteFile(taskFile, dataBytes, 0644)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Successfully migrated task")
+	return nil
+}
+
 // Function to add task to list 
 func addTask(task string, level int) error {
 	// Reading from file 
@@ -81,16 +184,18 @@ The 'tt' command can be used to add or complete tasks. You can add
 multiple tiers of difficulty to these tasks.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		startTask, _ := cmd.Flags().GetString("start")
-		endTask, _ := cmd.Flags().GetString("end")
+		endTask, _ := cmd.Flags().GetString("complete")
 		taskLevel, _ := cmd.Flags().GetInt("level")
 		if startTask != "<>" {
 			err := addTask(startTask, taskLevel)
 			if err != nil {
-				fmt.Println(err.Error())
+				fmt.Println("Error:", err.Error())
 			}
 		} else if endTask != "<>" {
-			// TODO
-			fmt.Println("task completed")
+			err := migrateTask(endTask)
+			if err != nil {
+                fmt.Println("Error:", err.Error())
+            }
 		} else if len(args) > 0 && args[0] == "ls" {
 			// TODO
 			fmt.Println("list called")
@@ -106,5 +211,5 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	ttCmd.Flags().StringP("start", "s", "<>", "task being started")
 	ttCmd.Flags().IntP("level", "l", 1, "difficulty level")
-	ttCmd.Flags().StringP("end", "e", "<>", "task being completed")
+	ttCmd.Flags().StringP("complete", "c", "<>", "task being completed")
 }
