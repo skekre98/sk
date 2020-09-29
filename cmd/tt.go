@@ -57,7 +57,7 @@ func markComplete(finished Task) error {
 		Duration: time.Now().Sub(finished.Start),
 		Level: finished.Level,
 	}
-	fmt.Println(newFinish.Duration)
+	fmt.Println("Task Duration:", newFinish.Duration)
 	data = append(data, *newFinish)
 	dataBytes, err := json.Marshal(data)
 	if err != nil {
