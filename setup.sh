@@ -1,8 +1,9 @@
 #!/bin/bash
 
 function install_dependencies {
-	echo Installing cobra...
+	echo Installing dependencies...
 	go get -v github.com/spf13/cobra/cobra
+	echo cobra
 }
 
 function create_configs {
