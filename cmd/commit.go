@@ -42,7 +42,7 @@ func gitCommit(msg string, branch string) error {
 	if err != nil {
 		return errors.New("PUSH FAILED <!!!!!>")
 	} else {
-		fmt.Println("changes pushed <^>")
+		fmt.Println("changes pushed to branch %s <^>", branch)
 	}
 
 	return nil
