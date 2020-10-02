@@ -23,6 +23,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"github.com/spf13/cobra"
+	"github.com/jedib0t/go-pretty/table"
 )
 
 // task struct 
@@ -37,6 +38,33 @@ type FinishedTask struct {
 	Text string `json:"Text"`
 	Duration time.Duration `json:"Duration"`
 	Level int `json:"Level"`	
+}
+
+func listTasks() error {
+	// Reading from file 
+	home := os.Getenv("HOME")
+	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
+	file, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+	
+	// Grabbing current data
+	data := []Task{}
+	json.Unmarshal(file, &data)
+
+	// Creating table to render 
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"Task", "Start", "Level", "Elapsed"})
+	for _, task := range data {
+		start := task.Start.Format(time.RFC1123)
+		elapsed := time.Now().Sub(task.Start)
+		t.AppendRow([]interface{}{task.Text, start, task.Level, elapsed})
+	}
+
+	t.Render()
+    return nil
 }
 
 // Function to mark task as completed 
@@ -197,8 +225,10 @@ multiple tiers of difficulty to these tasks.`,
                 fmt.Println("Error:", err.Error())
             }
 		} else if len(args) > 0 && args[0] == "ls" {
-			// TODO
-			fmt.Println("list called")
+			err := listTasks()
+			if err != nil {
+                fmt.Println("Error:", err.Error())
+            }
 		} else {
 			cmd.Help()
 		}

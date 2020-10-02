@@ -4,6 +4,9 @@ function install_dependencies {
 	echo Installing dependencies...
 	go get -v github.com/spf13/cobra/cobra
 	echo cobra
+	go get -v github.com/jedib0t/go-pretty/table
+	echo go-pretty
+
 }
 
 function create_configs {
