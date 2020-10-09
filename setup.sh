@@ -6,6 +6,8 @@ function install_dependencies {
 	echo cobra
 	go get -v github.com/jedib0t/go-pretty/table
 	echo go-pretty
+	go get -v github.com/rocketlaunchr/google-search
+	echo google-search
 
 }
 
