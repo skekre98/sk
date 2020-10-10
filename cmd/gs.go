@@ -16,10 +16,13 @@ limitations under the License.
 package cmd
 
 import (
+	"os"
 	"fmt"
 	"context"
+	"strconv"
 	"github.com/spf13/cobra"
 	google "github.com/rocketlaunchr/google-search"
+	"github.com/jedib0t/go-pretty/table"
 )
 
 // Function to run search query
@@ -31,12 +34,30 @@ func runQuery(query string) error {
 		return err
 	}
 	
-	for _, r := range results {
-		fmt.Println("Rank:", r.Rank)
-		fmt.Println("URL:", r.URL)
-		fmt.Println("Title:", r.Title)
+	// Creating table of results 
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"", "Title", "URL"})
+	for i := 0; i < 5; i++ {
+		r := results[i]
+		t.AppendRow([]interface{}{r.Rank, r.Title, r.URL})
+	}
+	t.Render()
+
+	fmt.Println("Which result would you like to route to?")
+	fmt.Print("	(1-5)/n: ")
+	var resp string
+	fmt.Scanln(&resp)
+	if resp == "n" {
+		fmt.Println("Routing cancelled")
+		return nil
 	}
 
+	index, err := strconv.Atoi(resp)
+	if err != nil {
+		return err
+	}
+	fmt.Println(results[index-1].URL)
 	return nil
 }
 
