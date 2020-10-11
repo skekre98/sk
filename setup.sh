@@ -8,6 +8,8 @@ function install_dependencies {
 	echo go-pretty
 	go get -v github.com/rocketlaunchr/google-search
 	echo google-search
+	go get -v github.com/pkg/browser
+	echo browser
 
 }
 

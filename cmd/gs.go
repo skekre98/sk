@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"context"
 	"strconv"
+	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
 	google "github.com/rocketlaunchr/google-search"
 	"github.com/jedib0t/go-pretty/table"
@@ -57,7 +58,9 @@ func runQuery(query string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(results[index-1].URL)
+	endpoint := results[index-1].URL
+	browser.OpenURL(endpoint)
+
 	return nil
 }
 
@@ -78,7 +81,7 @@ to quickly create a Cobra application.`,
 		} else {
 			err := runQuery(query)
 			if err != nil {
-				fmt.Println(err.Error())
+				fmt.Println("Error:", err.Error())
 			}
 		}
 	},
