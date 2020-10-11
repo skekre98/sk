@@ -15,7 +15,7 @@ fi
 
 
 function tag_and_release {
-	git tag -a v$version -m "Releasing new version" master
+    git tag -a v$version -m "Releasing new version" master
     git push --tags
 }
 
