@@ -17,9 +17,17 @@ package cmd
 
 import (
 	"fmt"
-
+	"strings"
+	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
 )
+
+func youtubeSearch(query string) {
+	query = strings.ReplaceAll(query, " ", "+")
+	query = strings.Trim(query, " ")
+	url := fmt.Sprintf("https://www.youtube.com/results?search_query=%s", query)
+	browser.OpenURL(url)
+}
 
 // youtubeCmd represents the youtube command
 var youtubeCmd = &cobra.Command{
@@ -31,7 +39,7 @@ downloading, and analyzing.`,
 		query, _ := cmd.Flags().GetString("search")
 		link, _ := cmd.Flags().GetString("download")
 		if query != "<>" {
-			fmt.Println(query) 
+			youtubeSearch(query)
 		} else if link != "<>" {
 			fmt.Println(link) 
 		} else {
