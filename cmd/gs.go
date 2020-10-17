@@ -67,13 +67,8 @@ func runQuery(query string) error {
 // gsCmd represents the gs command
 var gsCmd = &cobra.Command{
 	Use:   "gs",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "command to make a google search from terminal",
+	Long: `A command to allow your to search google without opening your browser.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		query, _ := cmd.Flags().GetString("query")
 		if query == "<>" {

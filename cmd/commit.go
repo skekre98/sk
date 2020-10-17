@@ -51,7 +51,7 @@ func gitCommit(msg string, branch string) error {
 // commitCmd represents the commit command
 var commitCmd = &cobra.Command{
 	Use:   "commit",
-	Short: "A command to push to Github",
+	Short: "command to push to github",
 	Long: `A replacement for git
 
 Combines add, commit, and push into one command.`,
