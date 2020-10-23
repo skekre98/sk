@@ -40,58 +40,48 @@ type FinishedTask struct {
 	Level int `json:"Level"`	
 }
 
-func getJson(file string) ([]byte, error) {
-	home := os.Getenv("HOME")
-	jsonFile := fmt.Sprintf("%s/.tt/%s.json", home, file)
-	return ioutil.ReadFile(jsonFile)
-}
-
-func getTables() ([]Task, []FinishedTask, error) {
-	taskBytes, err := getJson("tasks")
-	if err != nil {
-		return nil, nil, err
-	}
-	t := []Task{}
-	json.Unmarshal(taskBytes, t)
-
-	completeBytes, err := getJson("tasks")
-	if err != nil {
-		return nil, nil, err
-	}
-	c := []Task{}
-	json.Unmarshal(completeBytes, c)
-
-	return t, c, nil
-}
-
 func listTaskGrid() error {
-	// Get files content
-	started, finished, err := getTables()
+  // Reading from file 
+	home := os.Getenv("HOME")
+	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
+	file, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return err
 	}
+	
+	// Grabbing current task data
+	taskArray := []Task{}
+	json.Unmarshal(file, &taskArray)
 
-	// Creating started table to render
-	fmt.Println("---------Current Tasks---------------") 
+	// Creating task table to render
+	fmt.Println("+--------------------+--------------Current----------+-------+-------------------+") 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Task", "Start", "Level", "Elapsed"})
-	for _, task := range started {
+	for _, task := range taskArray {
 		start := task.Start.Format(time.RFC1123)
 		elapsed := time.Now().Sub(task.Start)
 		t.AppendRow([]interface{}{task.Text, start, task.Level, elapsed})
 	}
 	t.Render()
 
-	// Creating started table to render
-	fmt.Println("---------Completed Tasks---------------")  
+	fileName = fmt.Sprintf("%s/.tt/completed.json", home)
+	file, err = ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+	
+	// Grabbing current finished data
+	finishedArray := []FinishedTask{}
+	json.Unmarshal(file, &finishedArray)
+
+	// Creating completed table to render
+	fmt.Println("\n+---------------------Completed---------------+-------+") 
 	c := table.NewWriter()
 	c.SetOutputMirror(os.Stdout)
-	c.AppendHeader(table.Row{"Task", "Start", "Level", "Elapsed"})
-	for _, task := range started {
-		start := task.Start.Format(time.RFC1123)
-		elapsed := time.Now().Sub(task.Start)
-		t.AppendRow([]interface{}{task.Text, start, task.Level, elapsed})
+	c.AppendHeader(table.Row{"Task", "Duration", "Level"})
+	for _, task := range finishedArray {
+		c.AppendRow([]interface{}{task.Text, task.Duration, task.Level})
 	}
 	c.Render()
 
