@@ -41,7 +41,7 @@ type FinishedTask struct {
 }
 
 func listTaskGrid() error {
-	// Reading from file 
+  // Reading from file 
 	home := os.Getenv("HOME")
 	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
 	file, err := ioutil.ReadFile(fileName)
