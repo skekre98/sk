@@ -40,30 +40,61 @@ type FinishedTask struct {
 	Level int `json:"Level"`	
 }
 
-func listTasks() error {
-	// Reading from file 
+func getJson(file string) ([]byte, error) {
 	home := os.Getenv("HOME")
-	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
-	file, err := ioutil.ReadFile(fileName)
+	jsonFile := fmt.Sprintf("%s/.tt/%s.json", home, file)
+	return ioutil.ReadFile(jsonFile)
+}
+
+func getTables() ([]Task, []FinishedTask, error) {
+	taskBytes, err := getJson("tasks")
+	if err != nil {
+		return nil, nil, err
+	}
+	t := []Task{}
+	json.Unmarshal(taskBytes, t)
+
+	completeBytes, err := getJson("tasks")
+	if err != nil {
+		return nil, nil, err
+	}
+	c := []Task{}
+	json.Unmarshal(completeBytes, c)
+
+	return t, c, nil
+}
+
+func listTaskGrid() error {
+	// Get files content
+	started, finished, err := getTables()
 	if err != nil {
 		return err
 	}
-	
-	// Grabbing current data
-	data := []Task{}
-	json.Unmarshal(file, &data)
 
-	// Creating table to render 
+	// Creating started table to render
+	fmt.Println("---------Current Tasks---------------") 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Task", "Start", "Level", "Elapsed"})
-	for _, task := range data {
+	for _, task := range started {
 		start := task.Start.Format(time.RFC1123)
 		elapsed := time.Now().Sub(task.Start)
 		t.AppendRow([]interface{}{task.Text, start, task.Level, elapsed})
 	}
-
 	t.Render()
+
+	// Creating started table to render
+	fmt.Println("---------Completed Tasks---------------")  
+	c := table.NewWriter()
+	c.SetOutputMirror(os.Stdout)
+	c.AppendHeader(table.Row{"Task", "Start", "Level", "Elapsed"})
+	for _, task := range started {
+		start := task.Start.Format(time.RFC1123)
+		elapsed := time.Now().Sub(task.Start)
+		t.AppendRow([]interface{}{task.Text, start, task.Level, elapsed})
+	}
+	c.Render()
+
     return nil
 }
 
@@ -225,7 +256,7 @@ multiple tiers of difficulty to these tasks.`,
                 fmt.Println("Error:", err.Error())
             }
 		} else if len(args) > 0 && args[0] == "ls" {
-			err := listTasks()
+			err := listTaskGrid()
 			if err != nil {
                 fmt.Println("Error:", err.Error())
             }

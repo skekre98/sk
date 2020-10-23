@@ -10,6 +10,8 @@ function install_dependencies {
 	echo google-search
 	go get -v github.com/pkg/browser
 	echo browser
+	go get -v github.com/knadh/go-get-youtube
+	echo go-get-youtube
 
 }
 

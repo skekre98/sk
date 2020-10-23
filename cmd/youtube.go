@@ -18,9 +18,26 @@ package cmd
 import (
 	"fmt"
 	"strings"
+	// "errors"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
+	yt "github.com/knadh/go-get-youtube/youtube"
 )
+
+func youtubeDownload(url string) error {
+	video, err := yt.Get(url)
+	if err != nil {
+		return err
+	}
+
+	options := &yt.Option{
+		Rename: true,  // rename file using video title
+		Resume: true,  // resume cancelled download
+		Mp3:    true,  // extract audio to MP3
+	}
+	video.Download(0, "video.mp4", options)
+	return nil
+}
 
 func youtubeSearch(query string) {
 	query = strings.ReplaceAll(query, " ", "+")
@@ -41,7 +58,10 @@ downloading, and analyzing.`,
 		if query != "<>" {
 			youtubeSearch(query)
 		} else if link != "<>" {
-			fmt.Println(link) 
+			err := youtubeDownload(link)
+			if err != nil {
+				fmt.Println("Error:", err.Error())
+			} 
 		} else {
 			cmd.Help()
 		}
