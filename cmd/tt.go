@@ -40,7 +40,7 @@ type FinishedTask struct {
 	Level int `json:"Level"`	
 }
 
-func listTasks() error {
+func listTaskGrid() error {
 	// Reading from file 
 	home := os.Getenv("HOME")
 	fileName := fmt.Sprintf("%s/.tt/tasks.json", home)
@@ -49,21 +49,42 @@ func listTasks() error {
 		return err
 	}
 	
-	// Grabbing current data
-	data := []Task{}
-	json.Unmarshal(file, &data)
+	// Grabbing current task data
+	taskArray := []Task{}
+	json.Unmarshal(file, &taskArray)
 
-	// Creating table to render 
+	// Creating task table to render
+	fmt.Println("+--------------------+--------------Current----------+-------+-------------------+") 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Task", "Start", "Level", "Elapsed"})
-	for _, task := range data {
+	for _, task := range taskArray {
 		start := task.Start.Format(time.RFC1123)
 		elapsed := time.Now().Sub(task.Start)
 		t.AppendRow([]interface{}{task.Text, start, task.Level, elapsed})
 	}
-
 	t.Render()
+
+	fileName = fmt.Sprintf("%s/.tt/completed.json", home)
+	file, err = ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+	
+	// Grabbing current finished data
+	finishedArray := []FinishedTask{}
+	json.Unmarshal(file, &finishedArray)
+
+	// Creating completed table to render
+	fmt.Println("\n+---------------------Completed---------------+-------+") 
+	c := table.NewWriter()
+	c.SetOutputMirror(os.Stdout)
+	c.AppendHeader(table.Row{"Task", "Duration", "Level"})
+	for _, task := range finishedArray {
+		c.AppendRow([]interface{}{task.Text, task.Duration, task.Level})
+	}
+	c.Render()
+
     return nil
 }
 
@@ -225,7 +246,7 @@ multiple tiers of difficulty to these tasks.`,
                 fmt.Println("Error:", err.Error())
             }
 		} else if len(args) > 0 && args[0] == "ls" {
-			err := listTasks()
+			err := listTaskGrid()
 			if err != nil {
                 fmt.Println("Error:", err.Error())
             }
