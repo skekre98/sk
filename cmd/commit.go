@@ -70,5 +70,5 @@ func init() {
 
 	// Here you will define your flags and configuration settings.
 	commitCmd.Flags().StringP("msg", "m", ".", "commit message")
-	commitCmd.Flags().StringP("branch", "b", "master", "repository branch")
+	commitCmd.Flags().StringP("branch", "b", "main", "repository branch")
 }
