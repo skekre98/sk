@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,22 +17,27 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
-	"time"
+
+	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
-var longStr = fmt.Sprintf("I am a tool to help you reach your full potential,\nand it is currently %s.\nWhat can I help you with today?", time.Now().String())
+var longStr = `   _____  _  __   _____ _      _____
+  / ____|| |/ /  / ____| |    |_   _|
+ | (___  | ' /  | |    | |      | |  
+  \___ \ |  <   | |    | |      | |  
+  ____) || . \  | |____| |____ _| |_ 
+ |_____/ |_|\_\  \_____|______|_____|`
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sk",
-	Short: "A CLI for doing stuff",
-	Long: longStr,
+	Short: "A command line tool for developer tasks",
+	Long:  longStr,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
