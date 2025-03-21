@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,13 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
-	"errors"
 	"path/filepath"
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +30,6 @@ import (
 func SorensenDice(stringOne, stringTwo string) float64 {
 	i := strings.LastIndex(stringOne, "/")
 	stringOne = stringOne[i+1:]
-
 
 	firstBigrams := make(map[string]int)
 	for i := 0; i < len(stringOne)-1; i++ {
@@ -74,47 +74,47 @@ func SorensenDice(stringOne, stringTwo string) float64 {
 	return (2.0 * intersectionSize) / (float64(len(stringOne)) + float64(len(stringTwo)) - 2)
 }
 
-// Function to get files along directory tree 
+// Function to get files along directory tree
 func getFiles() ([]string, error) {
 	files := []string{}
 	err := filepath.Walk(".",
-	    func(path string, info os.FileInfo, err error) error {
-	    if err != nil {
-	        return err
-		}
-		if !info.IsDir() {
-			files = append(files, path)
-		}
-	    return nil
-	})
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				files = append(files, path)
+			}
+			return nil
+		})
 	if err != nil {
-	    return nil, err
+		return nil, err
 	}
 
 	return files, nil
 }
 
-// Function to get files along directory tree 
+// Function to get files along directory tree
 func getDirs() ([]string, error) {
 	dirs := []string{}
 	err := filepath.Walk(".",
-	    func(path string, info os.FileInfo, err error) error {
-	    if err != nil {
-	        return err
-		}
-		if info.IsDir() {
-			dirs = append(dirs, path)
-		}
-	    return nil
-	})
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				dirs = append(dirs, path)
+			}
+			return nil
+		})
 	if err != nil {
-	    return nil, err
+		return nil, err
 	}
 
 	return dirs, nil
 }
 
-// Function to execute open command 
+// Function to execute open command
 func openExecute(app string, dest string, findDir bool) error {
 	app_map := make(map[string]string)
 	app_map["sblm"] = "Sublime Text"
@@ -131,7 +131,7 @@ func openExecute(app string, dest string, findDir bool) error {
 		entities, err = getFiles()
 	}
 	if err != nil {
-	    return err
+		return err
 	}
 
 	maxCoeff := 0.0
@@ -160,8 +160,8 @@ func openExecute(app string, dest string, findDir bool) error {
 // openCmd represents the open command
 var openCmd = &cobra.Command{
 	Use:   "open",
-	Short: "open a file or folder along the directory tree.",
-	Long: `You'll never have to see a file to open it again |:>)(<:|`,
+	Short: "Open a file or folder along the directory tree.",
+	Long:  `You'll never have to see a file to open it again |:>)(<:|`,
 	Run: func(cmd *cobra.Command, args []string) {
 		app, _ := cmd.Flags().GetString("app")
 		file, _ := cmd.Flags().GetString("file")
